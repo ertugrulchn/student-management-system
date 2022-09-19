@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 getAll = async (model) => {
     const dbQuery = await model.findAll();
 

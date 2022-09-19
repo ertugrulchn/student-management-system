@@ -1,0 +1,83 @@
+{
+    "extends": "eslint:recommended",
+    "parserOptions": {
+        "ecmaVersion": "latest",
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true,
+            "experimentalObjectRestSpread": true
+        }
+    },
+    "env": {
+        "node": true
+    },
+    "rules": {
+        // Satır başı boşlukları
+        "indent": [
+            "error",
+            4
+        ],
+        // require ifadeleri dosyaların en başında olmalı
+        "global-require": [
+            "error"
+        ],
+        // Error yakalamaları ele alınmalı
+        "handle-callback-err": [
+            "error"
+        ],
+        // Çift tırnak yerine tek tırnak kullanılmalı. Ayrıca gereksiz yere backtick kullanılmamalı
+        "quotes": [
+            2,
+            "single",
+            "avoid-escape"
+        ],
+        // Yorum satırlarının ilk harfi büyük olmalı
+        "capitalized-comments": [
+            "error",
+            "always"
+        ],
+        // Yorum satırlarında // ve /* ifadelerinden sonra bir boşluk bırakılmalı 
+        "spaced-comment": [
+            "error",
+            "always",
+            {
+                "exceptions": [
+                    "-",
+                    "+"
+                ]
+            }
+        ],
+        // Fonksiyon ve metodlarda default değer verilen parametreler sonda yazılmalı
+        "default-param-last": [
+            "error"
+        ],
+        // foo["bar"] notasyonu yerine foo.bar veya foo[bar] kullanılmalı
+        "dot-notation": [
+            "error"
+        ],
+        // Boş fonksiyon ve metod gövdeleri yerine en azından yorum satırı koyulan fonk. ve metodlar
+        "no-empty": "error",
+        // var yerine let veya const kullanılmalı
+        "no-var": "error",
+        // Fonksiyon parametreleri tek satırda olmalı
+        "function-call-argument-newline": [
+            "error",
+            "consistent"
+        ],
+        "no-unused-vars": "error",
+        // Satır sonlarında noktalı virgül olmalı
+        "semi": [
+            "error",
+            "always"
+        ],
+        // Satır uzunluğu max 80 karakter olmalı
+        "max-len": [
+            "error",
+            {
+                "code": 80
+            }
+        ],
+        // If, while gibi tek satırda yazılabilecek durumlarda dahi bracket ({}) kullanılmalı
+        "curly": "error"
+    }
+}
