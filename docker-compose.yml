@@ -1,0 +1,18 @@
+version: '3.1'
+services:
+    mysql:
+        image: mysql:5.7
+        restart: always
+        environment:
+            MYSQL_DATABASE: 'student-management'
+            MYSQL_USER: 'meraklicoder'
+            MYSQL_PASSWORD: '744B*xka#5AFt7uQi2Ez'
+            MYSQL_ROOT_PASSWORD: 'r3qN@G%aVeG7wGiXS5*s8IoB1'
+        ports:
+            - '3306:3306'
+        expose:
+            - '3306'
+        volumes:
+            - my-db:/var/lib/mysql
+volumes:
+    my-db:
