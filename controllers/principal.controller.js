@@ -3,6 +3,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Principal = require('../models/principal.model');
 const { getOneByQuery } = require('../services/base.service');
+const apiError = require('../responses/error/api-error');
+const apiSuccess = require('../responses/success/api-success');
 
 const login = async (req, res, next) => {
     const principal = await getOneByQuery(Principal, {
@@ -10,12 +12,12 @@ const login = async (req, res, next) => {
     });
 
     if (principal <= 0) {
-        return next(
-            res.status(httpStatus.BAD_REQUEST).json({
-                message: 'Email or password is incorrect',
-                isSuccess: false,
-            })
+        apiError(
+            'Email or password is incorrect',
+            httpStatus.UNAUTHORIZED,
+            res
         );
+        throw Error();
     }
 
     const validPassword = await bcrypt.compare(
@@ -24,12 +26,12 @@ const login = async (req, res, next) => {
     );
 
     if (!validPassword) {
-        return next(
-            res.status(httpStatus.BAD_REQUEST).json({
-                message: 'Email or password is incorrect',
-                isSuccess: false,
-            })
+        apiError(
+            'Email or password is incorrect',
+            httpStatus.UNAUTHORIZED,
+            res
         );
+        throw Error();
     }
 
     // ? Create And Assign A Token
@@ -39,18 +41,19 @@ const login = async (req, res, next) => {
             first_name: principal.dataValues.first_name,
             last_name: principal.dataValues.last_name,
             email: principal.dataValues.email,
+            type: principal.dataValues.type,
         },
         process.env.TOKEN_SECRET
     );
     res.header('token', token);
 
-    return res.status(httpStatus.OK).json({
-        message: 'Login Success',
-        data: {
-            access_token: token,
-        },
-        isSuccess: true,
-    });
+    apiSuccess(
+        'Login Success',
+        { access_token: token },
+        true,
+        httpStatus.OK,
+        res
+    );
 };
 
 module.exports = {

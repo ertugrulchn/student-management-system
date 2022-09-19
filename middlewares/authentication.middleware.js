@@ -5,27 +5,20 @@
 
 const jwt = require('jsonwebtoken');
 const httpStatus = require('http-status');
+const apiError = require('../responses/error/api-error');
 
 module.exports = async function (req, res, next) {
     const token = req.headers?.authorization?.split(' ')[1];
 
     if (!token) {
-        return next(
-            res.status(httpStatus.UNAUTHORIZED).json({
-                message: 'Access Denied',
-                isSuccess: false,
-            })
-        );
+        apiError('Access Denied', httpStatus.UNAUTHORIZED, res);
+        throw Error();
     }
 
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
         if (err) {
-            return next(
-                res.status(httpStatus.BAD_REQUEST).json({
-                    message: 'Invalid access token',
-                    isSuccess: false,
-                })
-            );
+            apiError('Invalid access token', httpStatus.BAD_REQUEST, res);
+            throw Error();
         }
 
         req.user = decoded;
