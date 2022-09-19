@@ -20,6 +20,10 @@ const Principal = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
+        type: {
+            type: DataTypes.STRING,
+            defaultValue: 'principal',
+        },
     },
     {
         charset: 'utf8',
