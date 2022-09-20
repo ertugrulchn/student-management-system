@@ -7,7 +7,7 @@
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
     "lint": "eslint src/**/*.js",
-    "lint-fix": "eslint src/**/*.js --fix"
+    "lint-fix": "eslint ./**/*.js --fix"
   },
   "keywords": [
     "student-management",
