@@ -15,6 +15,13 @@ const loginValidation = Joi.object({
         ),
 });
 
+const createTeacher = Joi.object({
+    first_name: Joi.string().required(),
+    last_name: Joi.string().required(),
+    email: Joi.string().required().email(),
+});
+
 module.exports = {
     loginValidation,
+    createTeacher,
 };

@@ -2,11 +2,13 @@ const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const Principal = require('../models/principal.model');
-const { getOneByQuery } = require('../services/base.service');
+const { getOneByQuery, create } = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
 const apiSuccess = require('../responses/success/api-success');
+const Teacher = require('../models/teacher.model');
+const passwordHelper = require('../helpers/password.helper');
 
-const login = async (req, res, next) => {
+const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
         email: req.body.email,
     });
@@ -43,7 +45,10 @@ const login = async (req, res, next) => {
             email: principal.dataValues.email,
             type: principal.dataValues.type,
         },
-        process.env.TOKEN_SECRET
+        process.env.TOKEN_SECRET,
+        {
+            expiresIn: '24h',
+        }
     );
     res.header('token', token);
 
@@ -56,6 +61,40 @@ const login = async (req, res, next) => {
     );
 };
 
+const createTeacher = async (req, res) => {
+    const { first_name, last_name, email } = req.body;
+
+    const teacherPassword = (first_name + '_' + last_name)
+        .replace(/\s+/g, '_')
+        .toLowerCase();
+
+    const passwordToHash = await passwordHelper.passwordToHash(
+        teacherPassword.toLowerCase()
+    );
+
+    const password = passwordToHash.hashedPassword;
+
+    const teacherData = {
+        first_name,
+        last_name,
+        email,
+        password,
+    };
+
+    const createdTeacher = await create(Teacher, teacherData);
+
+    delete createdTeacher.dataValues.password;
+
+    apiSuccess(
+        'Teacher Created Successfully',
+        createdTeacher,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
 module.exports = {
     login,
+    createTeacher,
 };

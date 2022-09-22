@@ -1,8 +1,13 @@
+// Copyright (c) 2022 Ertuğrul Emre Cihan
+//
+// This software is released under the MIT License.
+// https://opensource.org/licenses/MIT
+
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
 
-const Principal = sequelize.define(
-    'principal',
+const Teacher = sequelize.define(
+    'teacher',
     {
         first_name: {
             type: DataTypes.STRING,
@@ -22,7 +27,7 @@ const Principal = sequelize.define(
         },
         type: {
             type: DataTypes.STRING,
-            defaultValue: 'principal',
+            defaultValue: 'teacher',
         },
     },
     {
@@ -31,4 +36,4 @@ const Principal = sequelize.define(
     }
 );
 
-module.exports = Principal;
+module.exports = Teacher;
