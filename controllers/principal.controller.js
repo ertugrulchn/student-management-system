@@ -52,13 +52,27 @@ const login = async (req, res) => {
 const createTeacher = async (req, res) => {
     const { first_name, last_name, email } = req.body;
 
-    const teacherPassword = generator.generate({
+    let retries = 10;
+
+    let teacherPassword = generator.generate({
         length: 15,
         numbers: true,
         symbols: true,
     });
 
-    console.log('teacherPassword :>> ', teacherPassword);
+    while (retries > 0 && teacherPassword.includes('"')) {
+        teacherPassword = generator.generate({
+            length: 15,
+            numbers: true,
+            symbols: true,
+        });
+        retries -= 1;
+    }
+
+    if (retries == 0) {
+        apiError('A problem has arisen', httpStatus.BAD_REQUEST, res);
+        throw Error();
+    }
 
     const passwordToHash = await passwordHelper.passwordToHash(teacherPassword);
 
