@@ -21,6 +21,7 @@ app.use(
 );
 
 app.use('/principal', routes.principal);
+app.use('/teacher', routes.teacher);
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
