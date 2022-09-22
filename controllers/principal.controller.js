@@ -1,12 +1,13 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
 const Principal = require('../models/principal.model');
 const { getOneByQuery, create } = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
 const apiSuccess = require('../responses/success/api-success');
 const Teacher = require('../models/teacher.model');
 const passwordHelper = require('../helpers/password.helper');
+const generator = require('generate-password');
+const { createLoginToken } = require('../helpers/jwt.helper');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -37,20 +38,7 @@ const login = async (req, res) => {
     }
 
     // ? Create And Assign A Token
-    const token = jwt.sign(
-        {
-            id: principal.dataValues.id,
-            first_name: principal.dataValues.first_name,
-            last_name: principal.dataValues.last_name,
-            email: principal.dataValues.email,
-            type: principal.dataValues.type,
-        },
-        process.env.TOKEN_SECRET,
-        {
-            expiresIn: '24h',
-        }
-    );
-    res.header('token', token);
+    const token = await createLoginToken(principal, res);
 
     apiSuccess(
         'Login Success',
@@ -64,13 +52,15 @@ const login = async (req, res) => {
 const createTeacher = async (req, res) => {
     const { first_name, last_name, email } = req.body;
 
-    const teacherPassword = (first_name + '_' + last_name)
-        .replace(/\s+/g, '_')
-        .toLowerCase();
+    const teacherPassword = generator.generate({
+        length: 15,
+        numbers: true,
+        symbols: true,
+    });
 
-    const passwordToHash = await passwordHelper.passwordToHash(
-        teacherPassword.toLowerCase()
-    );
+    console.log('teacherPassword :>> ', teacherPassword);
+
+    const passwordToHash = await passwordHelper.passwordToHash(teacherPassword);
 
     const password = passwordToHash.hashedPassword;
 

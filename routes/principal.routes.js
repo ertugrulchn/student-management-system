@@ -18,4 +18,5 @@ router
         bodyValidator(schema.createTeacher),
         principalController.createTeacher
     );
+
 module.exports = router;
