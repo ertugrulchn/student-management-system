@@ -8,6 +8,7 @@ const Teacher = require('../models/teacher.model');
 const passwordHelper = require('../helpers/password.helper');
 const generator = require('generate-password');
 const { createLoginToken } = require('../helpers/jwt.helper');
+const eventEmitter = require('../events/event-emitter.event');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -86,6 +87,16 @@ const createTeacher = async (req, res) => {
     };
 
     const createdTeacher = await create(Teacher, teacherData);
+
+    eventEmitter.emit('send_email', {
+        to: email,
+        subject: 'Teacher Password',
+        template: 'teacher-password-template',
+        context: {
+            fullName: first_name + ' ' + last_name,
+            password: teacherPassword,
+        },
+    });
 
     delete createdTeacher.dataValues.password;
 

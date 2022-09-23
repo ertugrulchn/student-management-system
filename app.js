@@ -3,11 +3,13 @@ require('express-async-errors');
 const cors = require('cors');
 const configs = require('./configs');
 const loaders = require('./loaders');
+const events = require('./events');
 const routes = require('./routes');
 const sequelize = require('./helpers/sequelize.helpers');
 
 configs();
 loaders();
+events();
 
 const app = express();
 app.use(express.json());
