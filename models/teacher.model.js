@@ -1,8 +1,3 @@
-// Copyright (c) 2022 Ertuğrul Emre Cihan
-//
-// This software is released under the MIT License.
-// https://opensource.org/licenses/MIT
-
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
 
