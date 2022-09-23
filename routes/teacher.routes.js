@@ -15,6 +15,7 @@ router
     .post(
         authenticate,
         authorization('teacher'),
+        bodyValidator(schema.changePasswordValidation),
         teacherController.resetPassword
     );
 

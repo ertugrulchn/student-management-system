@@ -3,7 +3,7 @@ const bcrypt = require('bcryptjs');
 const Principal = require('../models/principal.model');
 const { getOneByQuery, create } = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
-const apiSuccess = require('../responses/success/api-success');
+const apiSuccess = require('../responses/success/api-data-success');
 const Teacher = require('../models/teacher.model');
 const passwordHelper = require('../helpers/password.helper');
 const generator = require('generate-password');
@@ -16,11 +16,7 @@ const login = async (req, res) => {
     });
 
     if (principal <= 0) {
-        apiError(
-            'Email or password is incorrect',
-            httpStatus.UNAUTHORIZED,
-            res
-        );
+        apiError('Email or password is incorrect', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 
@@ -30,11 +26,7 @@ const login = async (req, res) => {
     );
 
     if (!validPassword) {
-        apiError(
-            'Email or password is incorrect',
-            httpStatus.UNAUTHORIZED,
-            res
-        );
+        apiError('Email or password is incorrect', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 

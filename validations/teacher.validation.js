@@ -10,6 +10,22 @@ const loginValidation = Joi.object({
         ),
 });
 
+const changePasswordValidation = Joi.object({
+    old_password: Joi.string()
+        .required()
+        .min(8)
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()+?])(?=.{8,})/
+        ),
+    new_password: Joi.string()
+        .required()
+        .min(8)
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*()+?])(?=.{8,})/
+        ),
+});
+
 module.exports = {
     loginValidation,
+    changePasswordValidation,
 };

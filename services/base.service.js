@@ -30,13 +30,13 @@ create = async (model, data) => {
 };
 
 updateById = async (model, id, data) => {
-    const dbQuery = await model.update({ data }, { where: { id: id } });
+    const dbQuery = await model.update(data, { where: { id: id } });
 
     return dbQuery;
 };
 
 updateByQuery = async (model, query, data) => {
-    const dbQuery = await model.update({ data }, { where: query });
+    const dbQuery = await model.update(data, { where: query });
 
     return dbQuery;
 };
