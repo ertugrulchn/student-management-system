@@ -9,6 +9,7 @@ const passwordHelper = require('../helpers/password.helper');
 const generator = require('generate-password');
 const { createLoginToken } = require('../helpers/jwt.helper');
 const eventEmitter = require('../events/event-emitter.event');
+const generatePassword = require('../helpers/password-generator.helper');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -45,27 +46,7 @@ const login = async (req, res) => {
 const createTeacher = async (req, res) => {
     const { first_name, last_name, email } = req.body;
 
-    let retries = 10;
-
-    let teacherPassword = generator.generate({
-        length: 15,
-        numbers: true,
-        symbols: true,
-    });
-
-    while (retries > 0 && teacherPassword.includes('"')) {
-        teacherPassword = generator.generate({
-            length: 15,
-            numbers: true,
-            symbols: true,
-        });
-        retries -= 1;
-    }
-
-    if (retries == 0) {
-        apiError('A problem has arisen', httpStatus.BAD_REQUEST, res);
-        throw Error();
-    }
+    const teacherPassword = generatePassword();
 
     const passwordToHash = await passwordHelper.passwordToHash(teacherPassword);
 
