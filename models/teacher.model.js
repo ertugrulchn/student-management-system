@@ -4,6 +4,10 @@ const sequelize = require('../helpers/sequelize.helpers');
 const Teacher = sequelize.define(
     'teacher',
     {
+        identification_number: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
         first_name: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -17,6 +21,10 @@ const Teacher = sequelize.define(
             allowNull: false,
         },
         password: {
+            type: DataTypes.STRING,
+            allowNull: false,
+        },
+        phone_number: {
             type: DataTypes.STRING,
             allowNull: false,
         },

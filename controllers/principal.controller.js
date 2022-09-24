@@ -6,7 +6,6 @@ const apiError = require('../responses/error/api-error');
 const apiSuccess = require('../responses/success/api-data-success');
 const Teacher = require('../models/teacher.model');
 const passwordHelper = require('../helpers/password.helper');
-const generator = require('generate-password');
 const { createLoginToken } = require('../helpers/jwt.helper');
 const eventEmitter = require('../events/event-emitter.event');
 const generatePassword = require('../helpers/password-generator.helper');
@@ -44,7 +43,13 @@ const login = async (req, res) => {
 };
 
 const createTeacher = async (req, res) => {
-    const { first_name, last_name, email } = req.body;
+    const {
+        first_name,
+        last_name,
+        email,
+        identification_number,
+        phone_number,
+    } = req.body;
 
     const teacherPassword = generatePassword();
 
@@ -53,10 +58,12 @@ const createTeacher = async (req, res) => {
     const password = passwordToHash.hashedPassword;
 
     const teacherData = {
+        identification_number,
         first_name,
         last_name,
         email,
         password,
+        phone_number,
     };
 
     const createdTeacher = await create(Teacher, teacherData);
@@ -72,6 +79,7 @@ const createTeacher = async (req, res) => {
     });
 
     delete createdTeacher.dataValues.password;
+    delete createdTeacher.dataValues.identification_number;
 
     apiSuccess(
         'Teacher Created Successfully',
