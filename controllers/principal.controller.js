@@ -9,6 +9,7 @@ const passwordHelper = require('../helpers/password.helper');
 const { createLoginToken } = require('../helpers/jwt.helper');
 const eventEmitter = require('../events/event-emitter.event');
 const generatePassword = require('../helpers/password-generator.helper');
+const Student = require('../models/student.model');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -114,7 +115,7 @@ const createStudent = async (req, res) => {
         phone_number,
     };
 
-    const createdStudent = await create(Teacher, studentData);
+    const createdStudent = await create(Student, studentData);
 
     eventEmitter.emit('send_email', {
         to: email,
