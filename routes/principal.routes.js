@@ -19,4 +19,13 @@ router
         principalController.createTeacher
     );
 
+router
+    .route('/student')
+    .post(
+        authenticate,
+        authorization('principal'),
+        bodyValidator(schema.createStudent),
+        principalController.createStudent
+    );
+
 module.exports = router;

@@ -90,7 +90,56 @@ const createTeacher = async (req, res) => {
     );
 };
 
+const createStudent = async (req, res) => {
+    const {
+        first_name,
+        last_name,
+        email,
+        identification_number,
+        phone_number,
+    } = req.body;
+
+    const studentPassword = generatePassword();
+
+    const passwordToHash = await passwordHelper.passwordToHash(studentPassword);
+
+    const password = passwordToHash.hashedPassword;
+
+    const studentData = {
+        identification_number,
+        first_name,
+        last_name,
+        email,
+        password,
+        phone_number,
+    };
+
+    const createdStudent = await create(Teacher, studentData);
+
+    eventEmitter.emit('send_email', {
+        to: email,
+        subject: 'Naci Orhan Student Password',
+        template: 'student-password-template',
+        context: {
+            fullName: first_name + ' ' + last_name,
+            password: studentPassword,
+        },
+    });
+
+    delete createdStudent.dataValues.password;
+    delete createdStudent.dataValues.identification_number;
+
+    apiSuccess(
+        'Student Created Successfully',
+        createdStudent,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
 module.exports = {
     login,
     createTeacher,
+    createStudent,
 };
