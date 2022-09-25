@@ -1,7 +1,7 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
 const Principal = require('../models/principal.model');
-const { getOneByQuery, create } = require('../services/base.service');
+const { getOneByQuery, create, getById } = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
 const apiSuccess = require('../responses/success/api-data-success');
 const Teacher = require('../models/teacher.model');
@@ -10,6 +10,7 @@ const { createLoginToken } = require('../helpers/jwt.helper');
 const eventEmitter = require('../events/event-emitter.event');
 const generatePassword = require('../helpers/password-generator.helper');
 const Student = require('../models/student.model');
+const Class = require('../models/class.model');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -59,12 +60,12 @@ const createTeacher = async (req, res) => {
     const password = passwordToHash.hashedPassword;
 
     const teacherData = {
-        identification_number,
-        first_name,
-        last_name,
-        email,
-        password,
-        phone_number,
+        identificationNumber: identification_number,
+        firstName: first_name,
+        lastName: last_name,
+        email: email,
+        password: password,
+        phoneNumber: phone_number,
     };
 
     const createdTeacher = await create(Teacher, teacherData);
@@ -80,7 +81,7 @@ const createTeacher = async (req, res) => {
     });
 
     delete createdTeacher.dataValues.password;
-    delete createdTeacher.dataValues.identification_number;
+    delete createdTeacher.dataValues.identificationNumber;
 
     apiSuccess(
         'Teacher Created Successfully',
@@ -107,12 +108,12 @@ const createStudent = async (req, res) => {
     const password = passwordToHash.hashedPassword;
 
     const studentData = {
-        identification_number,
-        first_name,
-        last_name,
-        email,
-        password,
-        phone_number,
+        identificationNumber: identification_number,
+        firstName: first_name,
+        lastName: last_name,
+        email: email,
+        password: password,
+        phoneNumber: phone_number,
     };
 
     const createdStudent = await create(Student, studentData);
@@ -128,7 +129,7 @@ const createStudent = async (req, res) => {
     });
 
     delete createdStudent.dataValues.password;
-    delete createdStudent.dataValues.identification_number;
+    delete createdStudent.dataValues.identificationNumber;
 
     apiSuccess(
         'Student Created Successfully',
@@ -139,8 +140,44 @@ const createStudent = async (req, res) => {
     );
 };
 
+const createClass = async (req, res) => {
+    const newClass = {
+        className: req.body.class_name,
+        teacherId: req.body.teacher_id,
+    };
+
+    const teacher = await getById(Teacher, req.body.teacher_id);
+
+    if (!teacher) {
+        apiError('Teacher Not Found', httpStatus.BAD_REQUEST, res);
+        throw Error();
+    }
+
+    const classData = getOneByQuery(Class, { teacherId: req.body.teacher_id });
+
+    if (classData) {
+        apiError(
+            'This teacher already has a class',
+            httpStatus.BAD_REQUEST,
+            res
+        );
+        throw Error();
+    }
+
+    const createdClass = await create(Class, newClass);
+
+    apiSuccess(
+        'Class Created Successfully',
+        createdClass,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
 module.exports = {
     login,
     createTeacher,
     createStudent,
+    createClass,
 };

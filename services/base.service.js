@@ -12,13 +12,13 @@ getById = async (model, id) => {
 };
 
 getOneByQuery = async (model, query) => {
-    const dbQuery = await model.findOne({ where: query });
+    const dbQuery = await model.findOne({ query });
 
     return dbQuery;
 };
 
 getByQuery = async (model, query) => {
-    const dbQuery = await model.findAll({ where: query });
+    const dbQuery = await model.findAll(query);
 
     return dbQuery;
 };

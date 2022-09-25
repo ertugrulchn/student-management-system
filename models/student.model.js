@@ -4,15 +4,15 @@ const sequelize = require('../helpers/sequelize.helpers');
 const Student = sequelize.define(
     'student',
     {
-        identification_number: {
+        identificationNumber: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        first_name: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        last_name: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -24,7 +24,7 @@ const Student = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        phone_number: {
+        phoneNumber: {
             type: DataTypes.STRING,
             allowNull: false,
         },

@@ -28,4 +28,12 @@ router
         principalController.createStudent
     );
 
+router
+    .route('/class')
+    .post(
+        authenticate,
+        authorization('principal'),
+        principalController.createClass
+    );
+
 module.exports = router;

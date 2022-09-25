@@ -1,18 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
+const Class = require('./class.model');
 
 const Teacher = sequelize.define(
     'teacher',
     {
-        identification_number: {
+        identificationNumber: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        first_name: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        last_name: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -24,7 +25,7 @@ const Teacher = sequelize.define(
             type: DataTypes.STRING,
             allowNull: false,
         },
-        phone_number: {
+        phoneNumber: {
             type: DataTypes.STRING,
             allowNull: false,
         },
@@ -38,5 +39,11 @@ const Teacher = sequelize.define(
         collate: 'utf8_unicode_ci',
     }
 );
+
+Teacher.hasMany(Class, { as: 'classes' });
+Class.belongsTo(Teacher, {
+    foreignKey: 'teacherId',
+    as: 'teachers',
+});
 
 module.exports = Teacher;

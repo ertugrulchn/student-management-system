@@ -4,11 +4,11 @@ const sequelize = require('../helpers/sequelize.helpers');
 const Principal = sequelize.define(
     'principal',
     {
-        first_name: {
+        firstName: {
             type: DataTypes.STRING,
             allowNull: false,
         },
-        last_name: {
+        lastName: {
             type: DataTypes.STRING,
             allowNull: false,
         },

@@ -15,8 +15,8 @@ const createPrincipal = async () => {
     const password = await passwordToHash(process.env.PRINCIPAL_PASSWORD);
 
     const principalData = {
-        first_name: process.env.PRINCIPAL_FIRST_NAME,
-        last_name: process.env.PRINCIPAL_LAST_NAME,
+        firstName: process.env.PRINCIPAL_FIRST_NAME,
+        lastName: process.env.PRINCIPAL_LAST_NAME,
         email: process.env.PRINCIPAL_EMAIL,
         password: password.hashedPassword,
     };
