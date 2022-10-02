@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
+const Class = require('./class.model');
 
 const Student = sequelize.define(
     'student',
@@ -38,5 +39,11 @@ const Student = sequelize.define(
         collate: 'utf8_unicode_ci',
     }
 );
+
+Class.hasMany(Student, { as: 'students' });
+Student.belongsTo(Class, {
+    foreignKey: 'classId',
+    as: 'classes',
+});
 
 module.exports = Student;

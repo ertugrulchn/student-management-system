@@ -44,10 +44,17 @@ const createStudent = Joi.object({
             // eslint-disable-next-line max-len
             /^\+\d{1,5}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,2}[-.\s]?\d{1,1}[-.\s]?\d{1,1}$/
         ),
+    class_id: Joi.string().required(),
+});
+
+const createClass = Joi.object({
+    class_name: Joi.string().required(),
+    teacher_id: Joi.string().required(),
 });
 
 module.exports = {
     loginValidation,
     createTeacher,
     createStudent,
+    createClass,
 };

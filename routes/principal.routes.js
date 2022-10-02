@@ -33,6 +33,7 @@ router
     .post(
         authenticate,
         authorization('principal'),
+        bodyValidator(schema.createClass),
         principalController.createClass
     );
 

@@ -99,7 +99,22 @@ const createStudent = async (req, res) => {
         email,
         identification_number,
         phone_number,
+        class_id,
     } = req.body;
+
+    const student = await Student.findAll({ where: { email: email } });
+
+    if (student) {
+        apiError('This user Already Exist', httpStatus.NOT_FOUND, res);
+        throw Error();
+    }
+
+    const classData = await getById(Class, class_id);
+
+    if (classData <= 0) {
+        apiError('Class Not Found', httpStatus.NOT_FOUND, res);
+        throw Error();
+    }
 
     const studentPassword = generatePassword();
 
@@ -114,13 +129,14 @@ const createStudent = async (req, res) => {
         email: email,
         password: password,
         phoneNumber: phone_number,
+        classId: class_id,
     };
 
     const createdStudent = await create(Student, studentData);
 
     eventEmitter.emit('send_email', {
         to: email,
-        subject: 'Naci Orhan Student Password',
+        subject: 'Kodlayap Student Password',
         template: 'student-password-template',
         context: {
             fullName: first_name + ' ' + last_name,
@@ -153,14 +169,25 @@ const createClass = async (req, res) => {
         throw Error();
     }
 
-    const classData = getOneByQuery(Class, { teacherId: req.body.teacher_id });
+    const teacherData = await Class.findOne({
+        where: { teacherId: req.body.teacher_id },
+    });
 
-    if (classData) {
+    if (teacherData) {
         apiError(
             'This teacher already has a class',
             httpStatus.BAD_REQUEST,
             res
         );
+        throw Error();
+    }
+
+    const className = await Class.findOne({
+        where: { className: req.body.class_name },
+    });
+
+    if (className) {
+        apiError('This class already exists', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 
