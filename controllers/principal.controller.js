@@ -1,7 +1,12 @@
 const httpStatus = require('http-status');
 const bcrypt = require('bcryptjs');
 const Principal = require('../models/principal.model');
-const { getOneByQuery, create, getById } = require('../services/base.service');
+const {
+    getOneByQuery,
+    create,
+    getById,
+    getByQuery,
+} = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
 const apiSuccess = require('../responses/success/api-data-success');
 const Teacher = require('../models/teacher.model');
@@ -11,6 +16,8 @@ const eventEmitter = require('../events/event-emitter.event');
 const generatePassword = require('../helpers/password-generator.helper');
 const Student = require('../models/student.model');
 const Class = require('../models/class.model');
+const Lesson = require('../models/lesson.model');
+const Project = require('../models/project.model');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -18,7 +25,7 @@ const login = async (req, res) => {
     });
 
     if (principal <= 0) {
-        apiError('Email or password is incorrect', httpStatus.BAD_REQUEST, res);
+        apiError('Email Or Password Is Incorrect', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 
@@ -28,7 +35,7 @@ const login = async (req, res) => {
     );
 
     if (!validPassword) {
-        apiError('Email or password is incorrect', httpStatus.BAD_REQUEST, res);
+        apiError('Email Or Password Is Incorrect', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 
@@ -102,10 +109,12 @@ const createStudent = async (req, res) => {
         class_id,
     } = req.body;
 
-    const student = await Student.findAll({ where: { email: email } });
+    const student = await getByQuery(Student, {
+        where: { email: req.body.email },
+    });
 
-    if (student) {
-        apiError('This user Already Exist', httpStatus.NOT_FOUND, res);
+    if (Object.keys(student).length !== 0) {
+        apiError('This Student Already Exist', httpStatus.NOT_FOUND, res);
         throw Error();
     }
 
@@ -159,35 +168,14 @@ const createStudent = async (req, res) => {
 const createClass = async (req, res) => {
     const newClass = {
         className: req.body.class_name,
-        teacherId: req.body.teacher_id,
     };
-
-    const teacher = await getById(Teacher, req.body.teacher_id);
-
-    if (!teacher) {
-        apiError('Teacher Not Found', httpStatus.BAD_REQUEST, res);
-        throw Error();
-    }
-
-    const teacherData = await Class.findOne({
-        where: { teacherId: req.body.teacher_id },
-    });
-
-    if (teacherData) {
-        apiError(
-            'This teacher already has a class',
-            httpStatus.BAD_REQUEST,
-            res
-        );
-        throw Error();
-    }
 
     const className = await Class.findOne({
         where: { className: req.body.class_name },
     });
 
     if (className) {
-        apiError('This class already exists', httpStatus.BAD_REQUEST, res);
+        apiError('This Class Already Exists', httpStatus.BAD_REQUEST, res);
         throw Error();
     }
 
@@ -202,9 +190,73 @@ const createClass = async (req, res) => {
     );
 };
 
+const createLesson = async (req, res) => {
+    const newLesson = {
+        name: req.body.name,
+        level: req.body.level,
+        teacherId: req.body.teacher_id,
+    };
+
+    const lesson = await getByQuery(Lesson, {
+        where: { teacherId: req.body.teacher_id },
+    });
+
+    if (Object.keys(lesson).length !== 0) {
+        apiError(
+            'This Teacher Already Have A Lesson',
+            httpStatus.NOT_FOUND,
+            res
+        );
+        throw Error();
+    }
+
+    const createdLesson = await create(Lesson, newLesson);
+
+    apiSuccess(
+        'Lesson Created Successfully',
+        createdLesson,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
+const createProject = async (req, res) => {
+    const newProject = {
+        name: req.body.name,
+        description: req.body.description,
+        teacherId: req.body.teacher_id,
+    };
+
+    const project = await getByQuery(Project, {
+        where: { teacherId: req.body.teacher_id },
+    });
+
+    if (Object.keys(project).length !== 0) {
+        apiError(
+            'This Teacher Already Have A Project',
+            httpStatus.NOT_FOUND,
+            res
+        );
+        throw Error();
+    }
+
+    const createdProject = await create(Project, newProject);
+
+    apiSuccess(
+        'Lesson Created Successfully',
+        createdProject,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
 module.exports = {
     login,
     createTeacher,
     createStudent,
     createClass,
+    createLesson,
+    createProject,
 };

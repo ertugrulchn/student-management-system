@@ -1,6 +1,5 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
-const Class = require('./class.model');
 
 const Teacher = sequelize.define(
     'teacher',
@@ -40,10 +39,8 @@ const Teacher = sequelize.define(
     }
 );
 
-Teacher.hasMany(Class, { as: 'classes' });
-Class.belongsTo(Teacher, {
-    foreignKey: 'teacherId',
-    as: 'teachers',
-});
+Teacher.associate = (models) => {
+    Teacher.hasOne(models.Lesson);
+};
 
 module.exports = Teacher;

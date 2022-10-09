@@ -1,19 +1,11 @@
 const httpStatus = require('http-status');
 const Class = require('../models/class.model');
 const Student = require('../models/student.model');
-const Teacher = require('../models/teacher.model');
 const apiDataSuccess = require('../responses/success/api-data-success');
-const { getByQuery } = require('../services/base.service');
+const { getByQuery, getAll } = require('../services/base.service');
 
 const getAllClass = async (req, res) => {
-    const classData = await getByQuery(Class, {
-        include: [
-            {
-                model: Teacher,
-                as: 'teachers',
-            },
-        ],
-    });
+    const classData = await getAll(Class);
 
     const studentData = await getByQuery(Student, {
         include: [
@@ -29,8 +21,6 @@ const getAllClass = async (req, res) => {
 
     for (const data of classData) {
         students = [];
-        delete data.dataValues.teachers.dataValues.password;
-        delete data.dataValues.teachers.dataValues.identificationNumber;
 
         for (const student of studentData) {
             delete student.dataValues.password;

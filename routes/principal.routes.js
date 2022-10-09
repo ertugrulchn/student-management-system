@@ -37,4 +37,22 @@ router
         principalController.createClass
     );
 
+router
+    .route('/lesson')
+    .post(
+        authenticate,
+        authorization('principal'),
+        bodyValidator(schema.createLesson),
+        principalController.createLesson
+    );
+
+router
+    .route('/project')
+    .post(
+        authenticate,
+        authorization('principal'),
+        bodyValidator(schema.createProject),
+        principalController.createProject
+    );
+
 module.exports = router;
