@@ -8,7 +8,7 @@ const {
     getByQuery,
 } = require('../services/base.service');
 const apiError = require('../responses/error/api-error');
-const apiSuccess = require('../responses/success/api-data-success');
+const apiDataSuccess = require('../responses/success/api-data-success');
 const Teacher = require('../models/teacher.model');
 const passwordHelper = require('../helpers/password.helper');
 const { createLoginToken } = require('../helpers/jwt.helper');
@@ -16,8 +16,6 @@ const eventEmitter = require('../events/event-emitter.event');
 const generatePassword = require('../helpers/password-generator.helper');
 const Student = require('../models/student.model');
 const Class = require('../models/class.model');
-const Lesson = require('../models/lesson.model');
-const Project = require('../models/project.model');
 
 const login = async (req, res) => {
     const principal = await getOneByQuery(Principal, {
@@ -42,7 +40,7 @@ const login = async (req, res) => {
     // ? Create And Assign A Token
     const token = await createLoginToken(principal, res);
 
-    apiSuccess(
+    apiDataSuccess(
         'Login Success',
         { access_token: token },
         true,
@@ -90,7 +88,7 @@ const createTeacher = async (req, res) => {
     delete createdTeacher.dataValues.password;
     delete createdTeacher.dataValues.identificationNumber;
 
-    apiSuccess(
+    apiDataSuccess(
         'Teacher Created Successfully',
         createdTeacher,
         true,
@@ -156,96 +154,9 @@ const createStudent = async (req, res) => {
     delete createdStudent.dataValues.password;
     delete createdStudent.dataValues.identificationNumber;
 
-    apiSuccess(
+    apiDataSuccess(
         'Student Created Successfully',
         createdStudent,
-        true,
-        httpStatus.OK,
-        res
-    );
-};
-
-const createClass = async (req, res) => {
-    const newClass = {
-        className: req.body.class_name,
-    };
-
-    const className = await Class.findOne({
-        where: { className: req.body.class_name },
-    });
-
-    if (className) {
-        apiError('This Class Already Exists', httpStatus.BAD_REQUEST, res);
-        throw Error();
-    }
-
-    const createdClass = await create(Class, newClass);
-
-    apiSuccess(
-        'Class Created Successfully',
-        createdClass,
-        true,
-        httpStatus.OK,
-        res
-    );
-};
-
-const createLesson = async (req, res) => {
-    const newLesson = {
-        name: req.body.name,
-        level: req.body.level,
-        teacherId: req.body.teacher_id,
-    };
-
-    const lesson = await getByQuery(Lesson, {
-        where: { teacherId: req.body.teacher_id },
-    });
-
-    if (Object.keys(lesson).length !== 0) {
-        apiError(
-            'This Teacher Already Have A Lesson',
-            httpStatus.NOT_FOUND,
-            res
-        );
-        throw Error();
-    }
-
-    const createdLesson = await create(Lesson, newLesson);
-
-    apiSuccess(
-        'Lesson Created Successfully',
-        createdLesson,
-        true,
-        httpStatus.OK,
-        res
-    );
-};
-
-const createProject = async (req, res) => {
-    const newProject = {
-        name: req.body.name,
-        description: req.body.description,
-        teacherId: req.body.teacher_id,
-    };
-
-    const project = await getByQuery(Project, {
-        where: { teacherId: req.body.teacher_id },
-    });
-
-    if (Object.keys(project).length !== 0) {
-        apiError(
-            'This Teacher Already Have A Project',
-            httpStatus.NOT_FOUND,
-            res
-        );
-        throw Error();
-    }
-
-    const createdProject = await create(Project, newProject);
-
-    apiSuccess(
-        'Project Created Successfully',
-        createdProject,
         true,
         httpStatus.OK,
         res
@@ -256,7 +167,4 @@ module.exports = {
     login,
     createTeacher,
     createStudent,
-    createClass,
-    createLesson,
-    createProject,
 };

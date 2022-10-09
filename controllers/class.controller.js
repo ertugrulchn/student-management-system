@@ -1,8 +1,9 @@
 const httpStatus = require('http-status');
 const Class = require('../models/class.model');
 const Student = require('../models/student.model');
+const apiError = require('../responses/error/api-error');
 const apiDataSuccess = require('../responses/success/api-data-success');
-const { getByQuery, getAll } = require('../services/base.service');
+const { getByQuery, getAll, create } = require('../services/base.service');
 
 const getAllClass = async (req, res) => {
     const classData = await getAll(Class);
@@ -46,6 +47,32 @@ const getAllClass = async (req, res) => {
     );
 };
 
+const createClass = async (req, res) => {
+    const newClass = {
+        className: req.body.class_name,
+    };
+
+    const className = await Class.findOne({
+        where: { className: req.body.class_name },
+    });
+
+    if (className) {
+        apiError('This Class Already Exists', httpStatus.BAD_REQUEST, res);
+        throw Error();
+    }
+
+    const createdClass = await create(Class, newClass);
+
+    apiDataSuccess(
+        'Class Created Successfully',
+        createdClass,
+        true,
+        httpStatus.OK,
+        res
+    );
+};
+
 module.exports = {
     getAllClass,
+    createClass,
 };

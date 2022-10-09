@@ -47,27 +47,8 @@ const createStudent = Joi.object({
     class_id: Joi.string().required(),
 });
 
-const createClass = Joi.object({
-    class_name: Joi.string().required(),
-});
-
-const createLesson = Joi.object({
-    name: Joi.string().required(),
-    level: Joi.string().required(),
-    teacher_id: Joi.string().required(),
-});
-
-const createProject = Joi.object({
-    name: Joi.string().required(),
-    description: Joi.string().required(),
-    teacher_id: Joi.string(),
-});
-
 module.exports = {
     loginValidation,
     createTeacher,
     createStudent,
-    createClass,
-    createLesson,
-    createProject,
 };
