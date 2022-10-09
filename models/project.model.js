@@ -1,5 +1,6 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../helpers/sequelize.helpers');
+const Teacher = require('./teacher.model');
 
 const Project = sequelize.define(
     'project',
@@ -19,7 +20,7 @@ const Project = sequelize.define(
     }
 );
 
-Project.belongsTo(Project, {
+Project.belongsTo(Teacher, {
     as: 'teachers',
     foreignKey: 'teacherId',
     constraints: false,

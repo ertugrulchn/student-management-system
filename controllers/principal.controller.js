@@ -244,7 +244,7 @@ const createProject = async (req, res) => {
     const createdProject = await create(Project, newProject);
 
     apiSuccess(
-        'Lesson Created Successfully',
+        'Project Created Successfully',
         createdProject,
         true,
         httpStatus.OK,
